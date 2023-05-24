@@ -1,6 +1,11 @@
+import Layout from "../Layout/Layout";
 
 const AboutMe = () => {
-  return <div>Tut budet infa obo mne</div>;
+  return (
+    <Layout>
+      <h2>o bo mne</h2>
+    </Layout>
+  )
 };
 
 export default AboutMe;

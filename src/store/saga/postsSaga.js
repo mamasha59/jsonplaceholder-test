@@ -1,7 +1,8 @@
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, takeEvery, takeLatest } from 'redux-saga/effects';
 import { getPostsFailure, getPostsSuccess } from '../slicers/postSlice/postSlice';
 import { getUserFailure, getUserSuccess } from '../slicers/currentUserSlice/currentUserSlice';
 import { getUserPostsFailure, getUserPostsSuccess } from '../slicers/userPostsSlicer/userPostsSlice';
+import { getPostCommentsFailure, getPostCommentsSuccess } from '../slicers/postCommentsSlice/postCommentsSlice/postCommentsSlice';
 
 const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
@@ -35,7 +36,7 @@ function* workGetCurrentUserPostsFetch(action) { // получаем посты 
         const id = action.payload.id;
         const userPosts = yield call(() => fetch(`https://jsonplaceholder.typicode.com/users/${id}/posts`));
         const formattedUserPosts = yield userPosts.json();
-        yield delay(700);
+        yield delay(1000);
         yield put(getUserPostsSuccess(formattedUserPosts));
     } catch (error) {
         console.log(`Произошла ошибка ${error}`);
@@ -43,10 +44,24 @@ function* workGetCurrentUserPostsFetch(action) { // получаем посты 
     }
 }
 
+function* workGetPostCommentsFetch(action) { // получаем коментарии к посту
+    try {
+        const postId = action.payload; // получаем айди поста через экшн
+        const comments = yield call(() => fetch(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`));
+        const formattedComments = yield comments.json();
+        yield delay(1000);
+        yield put(getPostCommentsSuccess(formattedComments));
+    } catch (error) {
+        console.log(`Произошла ошибка ${error}`);
+        yield put(getPostCommentsFailure())
+    }
+}
+
 function* postsSaga() {
     yield takeEvery('posts/getPostsFetch', workGetPostsFetch);
     yield takeEvery('user/getUserFetch', workGetCurrentUserFetch);
     yield takeEvery('userPosts/getUserPostsFetch', workGetCurrentUserPostsFetch);
+    yield takeLatest('comments/getPostCommentsFetch', workGetPostCommentsFetch);
 }
 
 export default postsSaga;

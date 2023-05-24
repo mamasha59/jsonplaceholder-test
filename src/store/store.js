@@ -4,6 +4,7 @@ import createSagaMiddleware from 'redux-saga';
 import postSlice from "./slicers/postSlice/postSlice";
 import currentUserSlice from "./slicers/currentUserSlice/currentUserSlice";
 import currentUserPostsSlice from "./slicers/userPostsSlicer/userPostsSlice";
+import postCommentsSlice from "./slicers/postCommentsSlice/postCommentsSlice/postCommentsSlice";
 
 import postsSaga from "./saga/postsSaga";
 
@@ -14,6 +15,7 @@ export const store = configureStore({
         posts: postSlice,
         currentUser: currentUserSlice,
         currentUserPosts: currentUserPostsSlice,
+        postComments: postCommentsSlice,
     },
     middleware: [saga]
 })

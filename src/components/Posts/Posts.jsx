@@ -1,7 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
-import Post from "../Post/Post";
 import { useEffect } from "react";
+
+import Post from "../Post/Post";
 import { getPostsFetch } from "../../store/slicers/postSlice/postSlice";
+import Spinner from 'react-bootstrap/Spinner';
+import Layout from "../Layout/Layout";
 
 const Posts = () => {
     const store = useSelector(state => state.posts);
@@ -13,12 +16,12 @@ const Posts = () => {
     },[dispatch]);
 
   return (
-    <main className='d-flex gap-3 justify-content-center flex-wrap container'>
-       {store.isLoading 
-        ? 'loading'
-        :  store.posts.map(e => <Post key={e.id} id={e.userId} title={e.title} body={e.body}/>)
-       }
-    </main>
+        <Layout>
+            {store.isLoading 
+                ?  <Spinner animation="grow" variant="info" />
+                :  store.posts.map(e => <Post key={e.id} postId={e.id} id={e.userId} title={e.title} body={e.body}/>)
+            }
+        </Layout>
   )
 };
 
