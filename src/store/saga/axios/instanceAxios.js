@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const instance = axios.create({
+export const postsProject = axios.create({
     baseURL: 'https://jsonplaceholder.typicode.com/',
     headers: {'Content-type': 'application/json; charset=UTF-8'}
   });

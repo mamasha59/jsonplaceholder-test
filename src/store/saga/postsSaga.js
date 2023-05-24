@@ -3,15 +3,15 @@ import { getPostsFailure, getPostsSuccess } from '../slicers/postSlice/postSlice
 import { getUserFailure, getUserSuccess } from '../slicers/currentUserSlice/currentUserSlice';
 import { getUserPostsFailure, getUserPostsSuccess } from '../slicers/userPostsSlicer/userPostsSlice';
 import { getPostCommentsFailure, getPostCommentsSuccess } from '../slicers/postCommentsSlice/postCommentsSlice/postCommentsSlice';
+import { postsProject } from './axios/instanceAxios';
 
 const delay = (ms) => new Promise(res => setTimeout(res, ms));
 
 function* workGetPostsFetch() { // получаем все посты
     try {
-        const posts = yield call(() => fetch('https://jsonplaceholder.typicode.com/posts'));
-        const formattedPosts = yield posts.json();
+        const posts = yield call(() => postsProject.get('/posts'));
         yield delay(500);
-        yield put(getPostsSuccess(formattedPosts));  
+        yield put(getPostsSuccess(posts.data));  
     } catch (error) {
         console.log(`Произошла ошибка ${error}`);
         yield put(getPostsFailure())
@@ -21,10 +21,9 @@ function* workGetPostsFetch() { // получаем все посты
 function* workGetCurrentUserFetch(action) { // получаем пользователья по айди
     try {
         const id = action.payload.id;
-        const posts = yield call(() => fetch(`https://jsonplaceholder.typicode.com/users/${id}`));
-        const formattedUser = yield posts.json();
+        const currentUser = yield call(() => postsProject.get(`/users/${id}`));
         yield delay(500);
-        yield put(getUserSuccess(formattedUser));
+        yield put(getUserSuccess(currentUser.data));
     } catch (error) {
         console.log(`Произошла ошибка ${error}`);
         yield put(getUserFailure())
@@ -34,10 +33,9 @@ function* workGetCurrentUserFetch(action) { // получаем пользова
 function* workGetCurrentUserPostsFetch(action) { // получаем посты пользователя
     try {
         const id = action.payload.id;
-        const userPosts = yield call(() => fetch(`https://jsonplaceholder.typicode.com/users/${id}/posts`));
-        const formattedUserPosts = yield userPosts.json();
+        const userPosts = yield call(() => postsProject.get(`/users/${id}/posts`));
         yield delay(1000);
-        yield put(getUserPostsSuccess(formattedUserPosts));
+        yield put(getUserPostsSuccess(userPosts.data));
     } catch (error) {
         console.log(`Произошла ошибка ${error}`);
         yield put(getUserPostsFailure())
@@ -47,10 +45,9 @@ function* workGetCurrentUserPostsFetch(action) { // получаем посты 
 function* workGetPostCommentsFetch(action) { // получаем коментарии к посту
     try {
         const postId = action.payload; // получаем айди поста через экшн
-        const comments = yield call(() => fetch(`https://jsonplaceholder.typicode.com/posts/${postId}/comments`));
-        const formattedComments = yield comments.json();
+        const comments = yield call(() => postsProject.get(`/posts/${postId}/comments`));
         yield delay(1000);
-        yield put(getPostCommentsSuccess(formattedComments));
+        yield put(getPostCommentsSuccess(comments.data));
     } catch (error) {
         console.log(`Произошла ошибка ${error}`);
         yield put(getPostCommentsFailure())
