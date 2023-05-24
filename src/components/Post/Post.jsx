@@ -13,16 +13,15 @@ import { useState } from 'react';
 const Post = ({title, body, id, postId}) => {
 
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // состояние попапа с коментариями
 
-  const store = useSelector(state => state);
-  const dispatch = useDispatch();
+  const store = useSelector(state => state); // состояние редакса коментарии (isLoading and comments)
+  const dispatch = useDispatch(); // функция изменения состяния редакса
 
-  const handleTakeComments = (idPost) => {
+  const handleTakeComments = (idPost) => { // при клике на кнопку Коментарии
     if(!isOpen){
       setIsOpen(true)
       dispatch(getPostCommentsFetch(idPost));
-      console.log(id,store.postComments.comments);
     }
       setIsOpen(!isOpen);
   }
@@ -34,16 +33,16 @@ const Post = ({title, body, id, postId}) => {
     <Card.Body className='justify-content-between d-flex flex-column'>
       <Card.Title>{title}</Card.Title>
       <Card.Text>{body}</Card.Text>
-        <Button title='открыть/закрыть' className='d-flex justify-content-center position-relative' onClick={() => handleTakeComments(postId)} variant="primary">
+        <Button title='открыть/закрыть' onClick={() => handleTakeComments(postId)} variant="primary">
           Коментарии
-          {store.postComments.isLoading && <Spinner className='position-absolute end-0' animation="border" variant="info" size="sm"/>}
         </Button>
     </Card.Body>
 
-    <div style={{zIndex:100}} className={`${isOpen ? 'd-flex flex-column position-absolute bg-info top-100 shadow-lg' : 'd-none'}`}>
-        {store.postComments.isLoading ? '' : 
-          (store.postComments.comments.map(e =>
-            <div key={e.id} className='p-2 border-bottom border-secondary'>
+    <div style={{zIndex:100}} className={`${isOpen ? 'd-flex flex-column align-items-center w-100 position-absolute top-100 shadow-lg' : 'd-none'}`}>
+        {store.postComments.isLoading 
+        ? <Spinner className='d-flex justify-content-center' animation="border" variant="dark" size="lg"/>  
+        : (store.postComments.comments.map(e =>
+            <div key={e.id} className='p-2 border-bottom border-secondary bg-info'>
               <p className='text-primary m-0'>{e.email}</p>
               <p className='m-0'>{e.body}</p>
             </div>)
